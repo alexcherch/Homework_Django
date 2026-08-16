@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакты - Магазин</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { min-height: 100vh; display: flex; background-color: #f8f9fa; }
+        .sidebar { width: 280px; background-color: #212529; min-height: 100vh; }
+        .nav-link { color: #fff; opacity: 0.75; }
+        .nav-link.active { opacity: 1; background-color: #0d6efd !important; }
+        .nav-link:hover { opacity: 1; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <!-- БОКОВОЕ МЕНЮ -->
+    <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-bg-dark">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <span class="fs-4 fw-bold">B Меню</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li><a href="/" class="nav-link">Главная</a></li>
+            <li><a href="/catalog" class="nav-link">Категории</a></li>
+            <li><a href="#" class="nav-link">Заказы</a></li>
+            <li><a href="/contacts" class="nav-link active">Контакты</a></li>
+        </ul>
+        <hr>
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <strong>Пользователь</strong>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                <li><a class="dropdown-item" href="#">Профиль</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Выход</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <div class="flex-grow-1 p-5">
+        <h1 class="display-5 fw-normal text-center mb-5">Контакты</h1>
+
+        <div class="row g-5">
+            <!-- Левая колонка: Форма -->
+            <div class="col-md-6">
+                <div class="card p-4 shadow-sm bg-white">
+                    <form method="POST" action="/contacts">
+                        <div class="mb-3">
+                            <label for="name" class="form-label text-muted">Имя</label>
+                            <input type="text" name="name" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label text-muted">Почта</label>
+                            <div class="input-group">
+                                <span class="input-group-text">@</span>
+                                <input type="email" name="email" class="form-control" id="email" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label text-muted">Сообщение</label>
+                            <textarea name="message" class="form-control" id="message" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary px-4">Отправить</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Правая колонка: Информация -->
+            <div class="col-md-6">
+                <h3 class="fw-normal">Наши контакты</h3>
+                <p class="text-muted" style="text-align: justify;">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit animi id est laborum.
+                </p>
+                <p class="text-muted mt-3 small">
+                    While these feedback styles cannot be styled with CSS, you can still customize the feedback text through JavaScript.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://jsdelivr.net"></script>
+</body>
+</html>
