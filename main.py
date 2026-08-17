@@ -17,7 +17,7 @@ class MyServer(BaseHTTPRequestHandler):
             self.send_header("Content-type", "text/html")
             self.end_headers()
 
-            with open("contacts.html", "r", encoding="utf-8") as file:
+            with open("templates/contacts.html", "r", encoding="utf-8") as file:
                 page_content = file.read()
             self.wfile.write(bytes(page_content, "utf-8"))
 
@@ -26,7 +26,7 @@ class MyServer(BaseHTTPRequestHandler):
             self.send_header("Content-type", "text/html")
             self.end_headers()
 
-            with open("404.html", "r", encoding="utf-8") as file:
+            with open("templates/404.html", "r", encoding="utf-8") as file:
                 page_content = file.read()
             self.wfile.write(bytes(page_content, "utf-8"))
 
