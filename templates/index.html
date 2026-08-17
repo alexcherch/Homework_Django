@@ -4,10 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Главная - Магазин</title>
-    <!-- Подключаем Bootstrap 5 через CDN -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+            crossorigin="anonymous"
+    >
     <style>
-        body { min-height: 100vh; display: flex; background-color: #f8f9fa; }
+        body { min-height: 100vh; display: flex; flex-direction: column; background-color: #f8f9fa; }
         .sidebar { width: 280px; background-color: #212529; min-height: 100vh; }
         .nav-link { color: #fff; opacity: 0.75; }
         .nav-link.active { opacity: 1; background-color: #0d6efd !important; }
@@ -16,8 +20,8 @@
 </head>
 <body>
 
-    <!-- БОКОВОЕ МЕНЮ (Sidebar) -->
-    <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-bg-dark">
+    <div class="d-flex flex-grow-1">
+        <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-bg-dark">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <span class="fs-4 fw-bold">B Меню</span>
         </a>
@@ -49,14 +53,12 @@
         </div>
     </div>
 
-    <!-- ОСНОВНОЙ КОНТЕНТ -->
     <div class="flex-grow-1 p-5">
         <div class="text-center mb-5">
             <h1 class="display-4 fw-normal">Главная</h1>
             <p class="lead text-muted">Вы находитесь на сайте, предназначенном для продажи товаров.</p>
         </div>
 
-        <!-- Сетка товаров (3 карточки) -->
         <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
             <div class="col" style="max-width: 360px;">
                 <div class="card text-center h-100 shadow-sm">
@@ -111,7 +113,12 @@
             </div>
         </div>
     </div>
+    </div>
 
-    <script src="https://jsdelivr.net"></script>
+    <footer class="text-muted text-center py-4 border-top">
+        <div>© 2026 Магазин — все права защищены</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>
