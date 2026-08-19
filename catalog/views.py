@@ -1,3 +1,11 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+def home(request):
+    """Контроллер для отображения главной страницы"""
+    return render(request, "catalog/home.html")
+
+
+def contacts(request):
+    """Контроллер для отображения страницы с контактами"""
+    return render(request, "catalog/contacts.html")

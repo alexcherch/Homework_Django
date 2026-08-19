@@ -1,7 +1,10 @@
 from django.urls import path
 
-# Сюда мы чуть позже импортируем наши view-контроллеры
+from catalog import views
+
+app_name = "catalog"
 
 urlpatterns = [
-    # Здесь будут маршруты для Главной и Контактов
+    path("", views.home, name="home"),
+    path("contacts/", views.contacts, name="contacts"),
 ]
