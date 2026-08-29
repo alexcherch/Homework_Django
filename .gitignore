@@ -218,4 +218,7 @@ __marimo__/
 report_workday_*.json
 
 *.sqlite*
-css/
+
+*.pyc
+db.sqlite3
+media/
