@@ -1,0 +1,132 @@
+[
+{
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+        "name": "Смартфон",
+        "description": "Флагманский телефон",
+        "image": "",
+        "category": 1,
+        "price": "59900.00",
+        "created_at": "2026-08-30T09:14:20.353Z",
+        "updated_at": "2026-08-30T09:14:20.353Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+        "name": "Ноутбук",
+        "description": "Мощный рабочий ноутбук",
+        "image": "",
+        "category": 1,
+        "price": "95000.00",
+        "created_at": "2026-08-30T09:14:45.362Z",
+        "updated_at": "2026-08-30T09:56:05.545Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 5,
+    "fields": {
+        "name": "Новый Смартфон 2026",
+        "description": "Ещё один крутой телефон",
+        "image": "",
+        "category": 1,
+        "price": "75000.00",
+        "created_at": "2026-08-30T09:40:52.880Z",
+        "updated_at": "2026-08-30T09:42:43.821Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 6,
+    "fields": {
+        "name": "Бюджетный Смартфон",
+        "description": "Такой же, как Смартфон, но подешевле",
+        "image": "",
+        "category": 1,
+        "price": "19900.00",
+        "created_at": "2026-08-30T09:42:27.118Z",
+        "updated_at": "2026-08-30T09:42:54.204Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 7,
+    "fields": {
+        "name": "Рассказы",
+        "description": "Какие-то рассказы",
+        "image": "",
+        "category": 2,
+        "price": "4500.00",
+        "created_at": "2026-08-30T09:43:54.859Z",
+        "updated_at": "2026-08-30T09:43:54.859Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 8,
+    "fields": {
+        "name": "Свинина",
+        "description": "Мясо свиньи",
+        "image": "",
+        "category": 3,
+        "price": "500.00",
+        "created_at": "2026-08-30T09:45:20.473Z",
+        "updated_at": "2026-08-30T09:45:20.473Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 9,
+    "fields": {
+        "name": "Курятина",
+        "description": "Мясо курицы",
+        "image": "",
+        "category": 3,
+        "price": "300.00",
+        "created_at": "2026-08-30T09:45:40.828Z",
+        "updated_at": "2026-08-30T09:45:40.828Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 10,
+    "fields": {
+        "name": "История",
+        "description": "Исторические факты (но это не точно)",
+        "image": "",
+        "category": 2,
+        "price": "1000.00",
+        "created_at": "2026-08-30T09:47:03.185Z",
+        "updated_at": "2026-08-30T09:47:03.185Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 11,
+    "fields": {
+        "name": "Игровой Ноутбук",
+        "description": "Ноутбук для игр",
+        "image": "",
+        "category": 1,
+        "price": "100000.00",
+        "created_at": "2026-08-30T09:47:57.835Z",
+        "updated_at": "2026-08-30T09:47:57.835Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 12,
+    "fields": {
+        "name": "Изучаем Python",
+        "description": "Толстая книга по Python",
+        "image": "",
+        "category": 2,
+        "price": "2500.00",
+        "created_at": "2026-08-30T10:04:10.812Z",
+        "updated_at": "2026-08-30T10:04:10.812Z"
+    }
+}
+]
