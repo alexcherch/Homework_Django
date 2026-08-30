@@ -220,5 +220,5 @@ report_workday_*.json
 *.sqlite*
 
 *.pyc
-db.sqlite3
+
 media/
