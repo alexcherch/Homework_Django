@@ -49,3 +49,6 @@ exclude = '''
 [tool.isort]
 # максимальная длина строки
 line_length = 119
+
+[tool.flake8]
+max-line-length = 119
