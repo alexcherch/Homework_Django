@@ -17,7 +17,7 @@ class Category(models.Model):
     )
 
     class Meta:
-        verbose_name = "Категория"
+        verbose_name = "категорию"
         verbose_name_plural = "Категории"
 
     def __str__(self):
@@ -62,7 +62,7 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата последнего изменения")
 
     class Meta:
-        verbose_name = "Товар"
+        verbose_name = "товар"
         verbose_name_plural = "Товары"
         ordering = ["name"]
 
