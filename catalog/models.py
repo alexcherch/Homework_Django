@@ -68,3 +68,18 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ContactInfo(models.Model):
+    """Модель для хранения контактных данных компании"""
+
+    address = models.CharField(max_length=255, verbose_name="Адрес")
+    phone = models.CharField(max_length=50, verbose_name="Телефон")
+    email = models.CharField(max_length=100, verbose_name="Email")
+
+    class Meta:
+        verbose_name = "контактные данные"
+        verbose_name_plural = "Контактные данные"
+
+    def __str__(self):
+        return f"Контакты: {self.phone} | {self.email}"

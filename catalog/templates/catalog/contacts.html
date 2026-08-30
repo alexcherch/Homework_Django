@@ -77,13 +77,24 @@
             </div>
 
             <div class="col-md-6">
-                <h3 class="fw-normal">Наши контакты</h3>
-                <p class="text-muted" style="text-align: justify;">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit animi id est laborum.
-                </p>
-                <p class="text-muted mt-3 small">
-                    While these feedback styles cannot be styled with CSS, you can still customize the feedback text through JavaScript.
-                </p>
+                <h3 class="fw-normal mb-4">Наши контакты</h3>
+
+                {% if contact_data %}
+                    <p class="text-muted mb-3">
+                        <strong>Адрес:</strong><br>
+                        {{ contact_data.address }}
+                    </p>
+                    <p class="text-muted mb-3">
+                        <strong>Телефон:</strong><br>
+                        {{ contact_data.phone }}
+                    </p>
+                    <p class="text-muted mb-0">
+                        <strong>Email:</strong><br>
+                        {{ contact_data.email }}
+                    </p>
+                {% else %}
+                    <p class="text-warning">Контактные данные ещё не заполнены в админ-панели.</p>
+                {% endif %}
             </div>
         </div>
     </div>
