@@ -19,7 +19,7 @@
             <div>
                 <span class="badge bg-secondary mb-2">{{ product.category.name }}</span>
                 <h1 class="display-5 text-dark fw-bold mb-3">{{ product.name }}</h1>
-                <p class="h3 text-primary fw-bold mb-4">{{ product.price }} руб.</p>
+                <p class="h3 text-primary fw-bold mb-4">{{ product.price|floatformat:0 }} ₽</p>
                 
                 <h2 class="h5 text-muted fw-bold mb-2">Описание товара:</h2>
                 <p class="text-muted fs-5" style="text-align: justify;">
