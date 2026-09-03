@@ -12,13 +12,7 @@
 
 <div class="d-flex" id="wrapper">
     <!-- БОКОВОЕ МЕНЮ (ЛЕВАЯ ПАНЕЛЬ) -->
-    <div class="bg-dark text-white p-4" id="sidebar-wrapper" style="width: 250px; min-height: 100vh;">
-        <div class="sidebar-heading fs-4 fw-bold mb-4">🛒 Меню</div>
-        <div class="list-group list-group-flush">
-            <a href="{% url 'catalog:home' %}" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2">Главная</a>
-            <a href="{% url 'catalog:contacts' %}" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2">Контакты</a>
-        </div>
-    </div>
+    {% include 'catalog/_menu.html' %}
 
     <!-- ОСНОВНОЙ КОНТЕНТ (ПРАВАЯ ЧАСТЬ) -->
     <div id="page-content-wrapper" class="flex-grow-1 d-flex flex-column">
