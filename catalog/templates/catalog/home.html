@@ -1,120 +1,30 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная - Магазин</title>
-    <link href="{% static 'catalog/css/bootstrap.min.css' %}" rel="stylesheet">
-    <style>
-        body { min-height: 100vh; display: flex; flex-direction: column; background-color: #f8f9fa; }
-        .sidebar { width: 280px; background-color: #212529; min-height: 100vh; }
-        .nav-link { color: #fff; opacity: 0.75; }
-        .nav-link.active { opacity: 1; background-color: #0d6efd !important; }
-        .nav-link:hover { opacity: 1; color: #fff; }
-    </style>
-</head>
-<body>
+{% extends 'catalog/base.html' %}
 
-    <div class="d-flex flex-grow-1">
-        <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-bg-dark">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <span class="fs-4 fw-bold">B Меню</span>
-        </a>
-        <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item">
-                <a href="/" class="nav-link active" aria-current="page">Главная</a>
-            </li>
-            <li>
-                <a href="/catalog" class="nav-link">Категории</a>
-            </li>
-            <li>
-                <a href="#" class="nav-link">Заказы</a>
-            </li>
-            <li>
-                <a href="/contacts" class="nav-link">Контакты</a>
-            </li>
-        </ul>
-        <hr>
-        <div class="dropdown">
-            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <strong>Пользователь</strong>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                <li><a class="dropdown-item" href="#">Профиль</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Выход</a></li>
-            </ul>
-        </div>
-    </div>
+{% block content %}
+<div class="text-center my-5">
+    <h1 class="display-4 fw-normal mb-3">Главная</h1>
+    <p class="lead text-muted">Вы находитесь на сайте, предназначенном для продажи товаров.</p>
+</div>
 
-    <div class="flex-grow-1 p-5">
-        <div class="text-center mb-5">
-            <h1 class="display-4 fw-normal">Главная</h1>
-            <p class="lead text-muted">Вы находитесь на сайте, предназначенном для продажи товаров.</p>
-        </div>
-
-        <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
-            <div class="col" style="max-width: 360px;">
-                <div class="card text-center h-100 shadow-sm">
-                    <div class="card-header py-3 bg-light">
-                        <h4 class="my-0 fw-normal">Товар 1</h4>
-                    </div>
-                    <div class="card-body">
-                        <h1 class="card-title pricing-card-title">$ 100</h1>
-                        <ul class="list-unstyled mt-3 mb-4 text-muted small">
-                            <li>10 users included</li>
-                            <li>2 GB of storage</li>
-                            <li>Email support</li>
-                            <li>Help center access</li>
-                        </ul>
-                        <button type="button" class="w-100 btn btn-lg btn-outline-primary">Купить</button>
-                    </div>
-                </div>
+<!-- БЛОК С КАРТОЧКАМИ ТОВАРОВ -->
+<div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+    <!-- Сюда в Задании 2 мы вставим динамический цикл вывода товаров из базы данных -->
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header text-center bg-transparent border-0 pt-4">
+                <h4 class="my-0 fw-normal">Товар 1</h4>
             </div>
-            <div class="col" style="max-width: 360px;">
-                <div class="card text-center h-100 shadow-sm">
-                    <div class="card-header py-3 bg-light">
-                        <h4 class="my-0 fw-normal">Товар 1</h4>
-                    </div>
-                    <div class="card-body">
-                        <h1 class="card-title pricing-card-title">$ 100</h1>
-                        <ul class="list-unstyled mt-3 mb-4 text-muted small">
-                            <li>10 users included</li>
-                            <li>2 GB of storage</li>
-                            <li>Email support</li>
-                            <li>Help center access</li>
-                        </ul>
-                        <button type="button" class="w-100 btn btn-lg btn-outline-primary">Купить</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col" style="max-width: 360px;">
-                <div class="card text-center h-100 shadow-sm">
-                    <div class="card-header py-3 bg-light">
-                        <h4 class="my-0 fw-normal">Товар 1</h4>
-                    </div>
-                    <div class="card-body">
-                        <h1 class="card-title pricing-card-title">$ 100</h1>
-                        <ul class="list-unstyled mt-3 mb-4 text-muted small">
-                            <li>10 users included</li>
-                            <li>2 GB of storage</li>
-                            <li>Email support</li>
-                            <li>Help center access</li>
-                        </ul>
-                        <button type="button" class="w-100 btn btn-lg btn-outline-primary">Купить</button>
-                    </div>
-                </div>
+            <div class="card-body text-center d-flex flex-column justify-content-between">
+                <h1 class="card-title pricing-card-title text-primary">$ 100</h1>
+                <ul class="list-unstyled mt-3 mb-4 text-muted small">
+                    <li>10 users included</li>
+                    <li>2 GB of storage</li>
+                    <li>Email support</li>
+                    <li>Help center access</li>
+                </ul>
+                <button type="button" class="btn btn-w-100 btn-outline-primary py-2">Купить</button>
             </div>
         </div>
     </div>
-    </div>
-
-    <footer class="text-muted text-center py-4 border-top">
-        <div>© 2026 Магазин — все права защищены</div>
-    </footer>
-
-    <script src="{% static 'catalog/js/bootstrap.bundle.min.js' %}"></script>
-</body>
-</html>
+</div>
+{% endblock %}

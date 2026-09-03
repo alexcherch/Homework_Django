@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skypro Shop</title>
+    <!-- Подключаем Bootstrap для стилей -->
+    <link href="{% static 'catalog/css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="d-flex" id="wrapper">
+    <!-- БОКОВОЕ МЕНЮ (ЛЕВАЯ ПАНЕЛЬ) -->
+    <div class="bg-dark text-white p-4" id="sidebar-wrapper" style="width: 250px; min-height: 100vh;">
+        <div class="sidebar-heading fs-4 fw-bold mb-4">🛒 Меню</div>
+        <div class="list-group list-group-flush">
+            <a href="{% url 'catalog:home' %}" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2">Главная</a>
+            <a href="{% url 'catalog:contacts' %}" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2">Контакты</a>
+        </div>
+    </div>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ (ПРАВАЯ ЧАСТЬ) -->
+    <div id="page-content-wrapper" class="flex-grow-1 d-flex flex-column">
+        <!-- Навигационная панель сверху -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-4 py-3 shadow-sm">
+            <span class="navbar-brand mb-0 h1 fw-bold text-dark">Панель управления интернет-магазином</span>
+        </nav>
+
+        <!-- ДИНАМИЧЕСКОЕ ОКНО ДЛЯ СТРАНИЦ -->
+        <main class="container-fluid p-4 flex-grow-1">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <!-- Подвал сайта -->
+        <footer class="bg-white text-center py-3 border-top text-muted mt-auto">
+            © 2026 Skypro Shop. Все права защищены.
+        </footer>
+    </div>
+</div>
+
+<script src="{% static 'catalog/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

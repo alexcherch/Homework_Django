@@ -1,17 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
 from catalog.models import ContactInfo, Product
 
 
 def home(request):
     """Контроллер для отображения главной страницы"""
-    latest_products = Product.objects.all().order_by("-id")[:5]
-
-    print("\n=== ПОСЛЕДНИЕ 5 СОЗДАННЫХ ПРОДУКТОВ ===")
-    for product in latest_products:
-        print(f"ID: {product.id} | {product.name} | Цена: {product.price}")
-    print("========================================\n")
-
     return render(request, "catalog/home.html")
 
 
@@ -33,3 +26,11 @@ def contacts(request):
         context["success"] = True
 
     return render(request, "catalog/contacts.html", context)
+
+
+def product_detail(request, pk):
+    """Контроллер для отображения детальной информации о конкретном товаре"""
+    product = get_object_or_404(Product, pk=pk)
+
+    context = {"product": product}
+    return render(request, "catalog/product_detail.html", context)
