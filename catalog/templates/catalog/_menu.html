@@ -1,9 +1,21 @@
 <!-- БОКОВОЕ МЕНЮ (ЛЕВАЯ ПАНЕЛЬ) -->
-<div class="bg-dark text-white p-4" id="sidebar-wrapper" style="width: 250px; min-height: 100vh;">
-    <div class="sidebar-heading fs-4 fw-bold mb-4">🛒 Меню</div>
+<div class="bg-dark text-white p-4" id="sidebar-wrapper" style="min-width: 260px; max-width: 260px; min-height: 100vh;">
+    <div class="sidebar-heading fs-4 fw-bold mb-4" style="white-space: nowrap;">🛒 Меню</div>
     <div class="list-group list-group-flush">
-    <a href="{% url 'catalog:home' %}" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2">Главная</a>
-    <a href="{% url 'catalog:product_create' %}" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2 text-info fw-bold">+ Добавить товар</a>
-    <a href="{% url 'catalog:contacts' %}" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2">Контакты</a>
+        <a href="{% url 'catalog:home' %}"
+           class="list-group-item list-group-item-action bg-dark text-white border-0 py-2 px-0"
+           style="white-space: nowrap;">
+            Главная
+        </a>
+        <a href="{% url 'catalog:product_create' %}"
+           class="list-group-item list-group-item-action bg-dark text-info fw-bold border-0 py-2 px-0"
+           style="white-space: nowrap;">
+            + Добавить товар
+        </a>
+        <a href="{% url 'catalog:contacts' %}"
+           class="list-group-item list-group-item-action bg-dark text-white border-0 py-2 px-0"
+           style="white-space: nowrap;">
+            Контакты
+        </a>
     </div>
 </div>
