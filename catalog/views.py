@@ -1,13 +1,19 @@
-from django.shortcuts import get_object_or_404, render
+from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, redirect, render
 
-from catalog.models import ContactInfo, Product
+from catalog.models import Category, ContactInfo, Product
 
 
 def home(request):
-    """Контроллер для отображения главной страницы"""
-    products = Product.objects.all()
+    """Контроллер для отображения главной страницы с пагинацией"""
+    products_list = Product.objects.all().order_by("id")
 
-    context = {"products": products}
+    paginator = Paginator(products_list, 3)
+
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context = {"page_obj": page_obj}
     return render(request, "catalog/home.html", context)
 
 
@@ -37,3 +43,27 @@ def product_detail(request, pk):
 
     context = {"product": product}
     return render(request, "catalog/product_detail.html", context)
+
+
+def product_create(request):
+    """Контроллер для создания нового товара через форму"""
+    if request.method == "POST":
+        name = request.POST.get("name")
+        description = request.POST.get("description")
+        price = request.POST.get("price")
+        category_id = request.POST.get("category")
+        image = request.FILES.get("image")
+
+        category = get_object_or_404(Category, pk=category_id)
+
+        Product.objects.create(
+            name=name,
+            description=description,
+            price=price,
+            category=category,
+            image=image,
+        )
+        return redirect("catalog:home")
+
+    categories = Category.objects.all()
+    return render(request, "catalog/product_form.html", {"categories": categories})

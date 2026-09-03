@@ -7,11 +7,10 @@
 </div>
 
 <!-- СЕТКА С ДИНАМИЧЕСКИМИ КАРТОЧКАМИ ТОВАРОВ -->
-<div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
-    {% for product in products %}
+<div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+    {% for product in page_obj %}
     <div class="col">
         <div class="card h-100 shadow-sm border-0 bg-white">
-            <!-- Отображение изображения товара -->
             {% if product.image %}
                 <img src="{{ product.image.url }}" class="card-img-top rounded-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
             {% else %}
@@ -24,7 +23,6 @@
                 <div>
                     <span class="badge bg-secondary mb-2">{{ product.category.name }}</span>
                     <h5 class="card-title fw-bold text-dark mb-2">{{ product.name }}</h5>
-                    <!-- Обрезаем описание до 100 символов по критериям ТЗ -->
                     <p class="card-text text-muted small" style="text-align: justify;">
                         {{ product.description|truncatechars:100 }}
                     </p>
@@ -34,8 +32,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="h5 text-primary fw-bold mb-0">{{ product.price }} руб.</span>
                     </div>
-                    <!-- Переход с главной на детальную страницу товара -->
-                    <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-outline-primary w-100 py-2fw-bold">
+                    <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-outline-primary w-100 py-2 fw-bold">
                         Посмотреть товар
                     </a>
                 </div>
@@ -48,4 +45,42 @@
     </div>
     {% endfor %}
 </div>
+
+<!-- БЛОК ПАГИНАЦИИ (ПЕРЕКЛЮЧЕНИЕ СТРАНИЦ) -->
+{% if page_obj.has_other_pages %}
+<nav aria-label="Page navigation" class="d-flex justify-content-center my-5">
+    <ul class="pagination shadow-sm">
+        <!-- Кнопка «Назад» -->
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo; Назад</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">&laquo; Назад</span></li>
+        {% endif %}
+
+        <!-- Номера страниц -->
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active" aria-current="page"><span class="page-link">{{ num }}</span></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Кнопка «Вперед» -->
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">Вперед &raquo;</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">Вперед &raquo;</span></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
 {% endblock %}
