@@ -5,7 +5,10 @@ from catalog.models import ContactInfo, Product
 
 def home(request):
     """Контроллер для отображения главной страницы"""
-    return render(request, "catalog/home.html")
+    products = Product.objects.all()
+
+    context = {"products": products}
+    return render(request, "catalog/home.html", context)
 
 
 def contacts(request):
