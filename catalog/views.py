@@ -1,18 +1,20 @@
-from django.shortcuts import render
+from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, redirect, render
 
-from catalog.models import ContactInfo, Product
+from catalog.models import Category, ContactInfo, Product
 
 
 def home(request):
-    """Контроллер для отображения главной страницы"""
-    latest_products = Product.objects.all().order_by("-id")[:5]
+    """Контроллер для отображения главной страницы с пагинацией"""
+    products_list = Product.objects.all().order_by("id")
 
-    print("\n=== ПОСЛЕДНИЕ 5 СОЗДАННЫХ ПРОДУКТОВ ===")
-    for product in latest_products:
-        print(f"ID: {product.id} | {product.name} | Цена: {product.price}")
-    print("========================================\n")
+    paginator = Paginator(products_list, 3)
 
-    return render(request, "catalog/home.html")
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context = {"page_obj": page_obj}
+    return render(request, "catalog/home.html", context)
 
 
 def contacts(request):
@@ -33,3 +35,35 @@ def contacts(request):
         context["success"] = True
 
     return render(request, "catalog/contacts.html", context)
+
+
+def product_detail(request, pk):
+    """Контроллер для отображения детальной информации о конкретном товаре"""
+    product = get_object_or_404(Product, pk=pk)
+
+    context = {"product": product}
+    return render(request, "catalog/product_detail.html", context)
+
+
+def product_create(request):
+    """Контроллер для создания нового товара через форму"""
+    if request.method == "POST":
+        name = request.POST.get("name")
+        description = request.POST.get("description")
+        price = request.POST.get("price")
+        category_id = request.POST.get("category")
+        image = request.FILES.get("image")
+
+        category = get_object_or_404(Category, pk=category_id)
+
+        Product.objects.create(
+            name=name,
+            description=description,
+            price=price,
+            category=category,
+            image=image,
+        )
+        return redirect("catalog:home")
+
+    categories = Category.objects.all()
+    return render(request, "catalog/product_form.html", {"categories": categories})
