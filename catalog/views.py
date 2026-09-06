@@ -5,15 +5,26 @@ from catalog.models import Category, ContactInfo, Product
 
 
 def home(request):
-    """Контроллер для отображения главной страницы с пагинацией"""
+    """Контроллер для отображения главной страницы с фильтрацией по категориям и пагинацией"""
     products_list = Product.objects.all().order_by("id")
 
-    paginator = Paginator(products_list, 3)
+    selected_category_id = request.GET.get("category")
 
+    if selected_category_id:
+        products_list = products_list.filter(category_id=selected_category_id)
+        selected_category_id = int(selected_category_id)
+
+    paginator = Paginator(products_list, 3)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
-    context = {"page_obj": page_obj}
+    categories = Category.objects.all()
+
+    context = {
+        "page_obj": page_obj,
+        "categories": categories,
+        "selected_category": selected_category_id,
+    }
     return render(request, "catalog/home.html", context)
 
 
