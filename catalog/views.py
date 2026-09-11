@@ -1,6 +1,5 @@
 from django.urls import reverse_lazy
-from django.views.generic import (CreateView, DetailView, ListView,
-                                  TemplateView)
+from django.views.generic import CreateView, DetailView, ListView, TemplateView
 
 from catalog.models import Category, ContactInfo, Product
 

@@ -1,10 +1,9 @@
+from django.conf import settings
+from django.core.mail import send_mail
 from django.urls import reverse, reverse_lazy
-from django.views.generic import (CreateView, DeleteView, DetailView,
-                                  ListView, UpdateView)
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from blog.models import BlogPost
-from django.core.mail import send_mail
-from django.conf import settings
 
 
 class BlogPostListView(ListView):
@@ -35,8 +34,7 @@ class BlogPostDetailView(DetailView):
         if obj.views_count == 100:
             subject = f"Поздравляем! Статья '{obj.title}' достигла успеха!"
             message = (
-                f"Ура! Ваша блоговая запись '{obj.title}' набрала ровно 100 просмотров. "
-                f"Продолжайте в том же духе!"
+                f"Ура! Ваша блоговая запись '{obj.title}' набрала ровно 100 просмотров. " f"Продолжайте в том же духе!"
             )
             send_mail(
                 subject=subject,
