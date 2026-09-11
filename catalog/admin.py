@@ -24,12 +24,9 @@ class ProductAdmin(admin.ModelAdmin):
         if obj.image:
             return format_html(
                 '<img src="{}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" />',
-                obj.image.url
+                obj.image.url,
             )
-        return format_html(
-            '<span style="color: #999; font-size: 11px;">{}</span>',
-            "Нет фото"
-        )
+        return format_html('<span style="color: #999; font-size: 11px;">{}</span>', "Нет фото")
 
     image_preview.short_description = "Превью"
 
