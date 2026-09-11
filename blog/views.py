@@ -3,6 +3,8 @@ from django.views.generic import (CreateView, DeleteView, DetailView,
                                   ListView, UpdateView)
 
 from blog.models import BlogPost
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 class BlogPostListView(ListView):
@@ -25,10 +27,25 @@ class BlogPostDetailView(DetailView):
     context_object_name = "blog"
 
     def get_object(self, queryset=None):
-        """При открытии статьи увеличиваем счетчик просмотров статьи по ТЗ"""
+        """Увеличиваем счетчик просмотров и отправляем email при достижении 100 просмотров"""
         obj = super().get_object(queryset)
         obj.views_count += 1
         obj.save()
+
+        if obj.views_count == 100:
+            subject = f"Поздравляем! Статья '{obj.title}' достигла успеха!"
+            message = (
+                f"Ура! Ваша блоговая запись '{obj.title}' набрала ровно 100 просмотров. "
+                f"Продолжайте в том же духе!"
+            )
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.DEFAULT_FROM_EMAIL],
+                fail_silently=True,
+            )
+
         return obj
 
 

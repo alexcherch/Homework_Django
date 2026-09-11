@@ -132,12 +132,20 @@ STATIC_URL = "static/"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
+_email_user = os.getenv("EMAIL_HOST_USER")
 
 MAILERS = {
     "default": {
-        "BACKEND": "django.core.mail.backends.console.EmailBackend",
+        "BACKEND": os.getenv("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"),
+        "OPTIONS": {
+            "host": os.getenv("EMAIL_HOST", "smtp.yandex.ru"),
+            "port": int(os.getenv("EMAIL_PORT", 465)),
+            "use_ssl": os.getenv("EMAIL_USE_SSL", "True") == "True",
+            "username": _email_user,
+            "password": os.getenv("EMAIL_HOST_PASSWORD"),
+        },
     },
 }
+
+SERVER_EMAIL = _email_user
+DEFAULT_FROM_EMAIL = _email_user
