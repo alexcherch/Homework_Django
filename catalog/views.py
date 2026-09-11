@@ -1,80 +1,74 @@
-from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import (CreateView, DetailView, ListView,
+                                  TemplateView)
 
 from catalog.models import Category, ContactInfo, Product
 
 
-def home(request):
-    """Контроллер для отображения главной страницы с фильтрацией по категориям и пагинацией"""
-    products_list = Product.objects.all().order_by("id")
+class ProductListView(ListView):
+    """Контроллер для отображения главной страницы (список товаров)"""
 
-    selected_category_id = request.GET.get("category")
+    model = Product
+    template_name = "catalog/home.html"
+    context_object_name = "products"
+    paginate_by = 3
 
-    if selected_category_id:
-        products_list = products_list.filter(category_id=selected_category_id)
-        selected_category_id = int(selected_category_id)
+    def get_queryset(self):
+        """Фильтрация товаров по выбранной категории"""
+        queryset = super().get_queryset().order_by("id")
+        category_id = self.request.GET.get("category")
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+        return queryset
 
-    paginator = Paginator(products_list, 3)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    def get_context_data(self, **kwargs):
+        """Передаем список категорий и id выбранной категории в шаблон"""
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.all()
 
-    categories = Category.objects.all()
-
-    context = {
-        "page_obj": page_obj,
-        "categories": categories,
-        "selected_category": selected_category_id,
-    }
-    return render(request, "catalog/home.html", context)
+        category_id = self.request.GET.get("category")
+        if category_id:
+            context["selected_category"] = int(category_id)
+        return context
 
 
-def contacts(request):
-    """Контроллер для отображения страницы с контактами"""
-    context = {"success": False}
+class ProductDetailView(DetailView):
+    """Контроллер для отображения детальной информации о товаре"""
 
-    contact_data = ContactInfo.objects.first()
-    context["contact_data"] = contact_data
+    model = Product
+    template_name = "catalog/product_detail.html"
+    context_object_name = "product"
 
-    if request.method == "POST":
+
+class ProductCreateView(CreateView):
+    """Контроллер для создания нового товара через форму"""
+
+    model = Product
+    fields = ["name", "description", "image", "category", "price"]
+    template_name = "catalog/product_form.html"
+    success_url = reverse_lazy("catalog:home")
+
+
+class ContactsTemplateView(TemplateView):
+    """Контроллер для страницы контактов"""
+
+    template_name = "catalog/contacts.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["contact_data"] = ContactInfo.objects.first()
+        context["success"] = False
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """Обработка отправки формы обратной связи"""
         name = request.POST.get("name")
         email = request.POST.get("email")
         message = request.POST.get("message")
 
-        print("\n=== ПОЛУЧЕНЫ ДАННЫЕ ИЗ ФОРМЫ (DJANGO) ===")
+        print("\n=== ПОЛУЧЕНЫ ДАННЫЕ ИЗ ФОРМЫ (CBV) ===")
         print(f"Имя: {name} | Email: {email} | Сообщение: {message}\n")
 
+        context = self.get_context_data()
         context["success"] = True
-
-    return render(request, "catalog/contacts.html", context)
-
-
-def product_detail(request, pk):
-    """Контроллер для отображения детальной информации о конкретном товаре"""
-    product = get_object_or_404(Product, pk=pk)
-
-    context = {"product": product}
-    return render(request, "catalog/product_detail.html", context)
-
-
-def product_create(request):
-    """Контроллер для создания нового товара через форму"""
-    if request.method == "POST":
-        name = request.POST.get("name")
-        description = request.POST.get("description")
-        price = request.POST.get("price")
-        category_id = request.POST.get("category")
-        image = request.FILES.get("image")
-
-        category = get_object_or_404(Category, pk=category_id)
-
-        Product.objects.create(
-            name=name,
-            description=description,
-            price=price,
-            category=category,
-            image=image,
-        )
-        return redirect("catalog:home")
-
-    categories = Category.objects.all()
-    return render(request, "catalog/product_form.html", {"categories": categories})
+        return self.render_to_response(context)
