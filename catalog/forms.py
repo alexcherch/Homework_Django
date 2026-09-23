@@ -58,3 +58,26 @@ class ProductForm(forms.ModelForm):
             if word in description_lower:
                 raise ValidationError(f"Запрещено использовать слово '{word}' в описании товара!")
         return description
+
+    def clean_image(self):
+        """Валидация изображения: проверка формата (JPEG/PNG) и размера (до 5 МБ) по ТЗ"""
+        image = self.cleaned_data.get("image")
+
+        if not image:
+            return image
+
+        max_size_bytes = 5 * 1024 * 1024
+        if image.size > max_size_bytes:
+            raise ValidationError("Размер файла превышает 5 МБ! Пожалуйста, сожмите изображение или выберите другое.")
+
+        import os
+
+        ext = os.path.splitext(image.name)[1].lower()
+        valid_extensions = [".jpg", ".jpeg", ".png"]
+
+        if ext not in valid_extensions:
+            raise ValidationError(
+                "Неподдерживаемый формат файла! Допускаются только изображения в формате JPEG или PNG."
+            )
+
+        return image
