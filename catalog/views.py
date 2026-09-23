@@ -1,6 +1,7 @@
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView, ListView, TemplateView
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
+from catalog.forms import ProductForm
 from catalog.models import Category, ContactInfo, Product
 
 
@@ -13,7 +14,6 @@ class ProductListView(ListView):
     paginate_by = 3
 
     def get_queryset(self):
-        """Фильтрация товаров по выбранной категории"""
         queryset = super().get_queryset().order_by("id")
         category_id = self.request.GET.get("category")
         if category_id:
@@ -21,10 +21,8 @@ class ProductListView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
-        """Передаем список категорий и id выбранной категории в шаблон"""
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.all()
-
         category_id = self.request.GET.get("category")
         if category_id:
             context["selected_category"] = int(category_id)
@@ -40,11 +38,28 @@ class ProductDetailView(DetailView):
 
 
 class ProductCreateView(CreateView):
-    """Контроллер для создания нового товара через форму"""
+    """Контроллер для создания нового товара"""
 
     model = Product
-    fields = ["name", "description", "image", "category", "price"]
+    form_class = ProductForm
     template_name = "catalog/product_form.html"
+    success_url = reverse_lazy("catalog:home")
+
+
+class ProductUpdateView(UpdateView):
+    """Контроллер для редактирования товара"""
+
+    model = Product
+    form_class = ProductForm
+    template_name = "catalog/product_form.html"
+    success_url = reverse_lazy("catalog:home")
+
+
+class ProductDeleteView(DeleteView):
+    """Контроллер для удаления товара"""
+
+    model = Product
+    template_name = "catalog/product_confirm_delete.html"
     success_url = reverse_lazy("catalog:home")
 
 
@@ -60,7 +75,6 @@ class ContactsTemplateView(TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        """Обработка отправки формы обратной связи"""
         name = request.POST.get("name")
         email = request.POST.get("email")
         message = request.POST.get("message")

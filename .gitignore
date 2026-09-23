@@ -222,3 +222,5 @@ report_workday_*.json
 *.pyc
 
 media/
+
+.DS_Store
