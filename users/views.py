@@ -3,9 +3,10 @@ from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.core.mail import send_mail
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import CreateView, UpdateView
 
-from users.forms import UserLoginForm, UserRegisterForm
+from users.forms import UserLoginForm, UserProfileForm, UserRegisterForm
 
 
 class RegisterView(CreateView):
@@ -51,3 +52,15 @@ class LogoutView(BaseLogoutView):
     """Выход из системы."""
 
     next_page = reverse_lazy("users:login")
+
+
+class ProfileView(LoginRequiredMixin, UpdateView):
+    """Редактирование профиля текущего пользователя."""
+
+    form_class = UserProfileForm
+    template_name = "users/profile.html"
+    success_url = reverse_lazy("users:profile")
+
+    def get_object(self, queryset=None):
+        """Возвращаем текущего пользователя — редактируем только свой профиль."""
+        return self.request.user

@@ -55,3 +55,30 @@ class UserLoginForm(AuthenticationForm):
         strip=False,
         widget=forms.PasswordInput(attrs={"class": "form-control py-2"}),
     )
+
+
+class UserProfileForm(forms.ModelForm):
+    """Форма редактирования профиля пользователя."""
+
+    class Meta:
+        model = User
+        fields = ["email", "avatar", "phone", "country"]
+        widgets = {
+            "email": forms.EmailInput(attrs={"class": "form-control py-2"}),
+            "avatar": forms.ClearableFileInput(attrs={"class": "form-control py-2"}),
+            "phone": forms.TextInput(attrs={"class": "form-control py-2"}),
+            "country": forms.TextInput(attrs={"class": "form-control py-2"}),
+        }
+        labels = {
+            "email": "Электронная почта",
+            "avatar": "Аватар",
+            "phone": "Номер телефона",
+            "country": "Страна",
+        }
+
+    def clean_email(self):
+        """Проверка уникальности email (кроме текущего пользователя)."""
+        email = self.cleaned_data.get("email")
+        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("Пользователь с таким email уже зарегистрирован.")
+        return email

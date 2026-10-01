@@ -30,6 +30,11 @@
         <hr class="text-secondary">
 
         {% if user.is_authenticated %}
+            <a href="{% url 'users:profile' %}"
+                class="list-group-item list-group-item-action bg-dark text-info fw-bold border-0 py-2 px-0"
+                style="white-space: nowrap;">
+                👤 Профиль
+            </a>
             <div class="text-secondary small px-0 py-2" style="white-space: nowrap;">
                 Вы вошли как <br><strong class="text-white">{{ user.email }}</strong>
             </div>
