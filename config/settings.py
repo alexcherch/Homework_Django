@@ -30,7 +30,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["skypro.local", "localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -43,9 +43,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "users",
     "catalog",
     "blog",
 ]
+
+AUTH_USER_MODEL = "users.User"
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -132,20 +136,21 @@ STATIC_URL = "static/"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-_email_user = os.getenv("EMAIL_HOST_USER")
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.yandex.ru")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 465))
+EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "True") == "True"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-MAILERS = {
-    "default": {
-        "BACKEND": os.getenv("EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"),
-        "OPTIONS": {
-            "host": os.getenv("EMAIL_HOST", "smtp.yandex.ru"),
-            "port": int(os.getenv("EMAIL_PORT", 465)),
-            "use_ssl": os.getenv("EMAIL_USE_SSL", "True") == "True",
-            "username": _email_user,
-            "password": os.getenv("EMAIL_HOST_PASSWORD"),
-        },
-    },
-}
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-SERVER_EMAIL = _email_user
-DEFAULT_FROM_EMAIL = _email_user
+LOGIN_URL = "users:login"
+LOGIN_REDIRECT_URL = "catalog:home"
+LOGOUT_REDIRECT_URL = "users:login"
+
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]

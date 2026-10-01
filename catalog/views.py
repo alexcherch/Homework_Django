@@ -3,6 +3,7 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView, T
 
 from catalog.forms import ProductForm
 from catalog.models import Category, ContactInfo, Product
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class ProductListView(ListView):
@@ -37,7 +38,7 @@ class ProductDetailView(DetailView):
     context_object_name = "product"
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     """Контроллер для создания нового товара"""
 
     model = Product
@@ -46,7 +47,7 @@ class ProductCreateView(CreateView):
     success_url = reverse_lazy("catalog:home")
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     """Контроллер для редактирования товара"""
 
     model = Product
@@ -55,7 +56,7 @@ class ProductUpdateView(UpdateView):
     success_url = reverse_lazy("catalog:home")
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     """Контроллер для удаления товара"""
 
     model = Product
