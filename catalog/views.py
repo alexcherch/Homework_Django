@@ -1,9 +1,9 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
 from catalog.forms import ProductForm
 from catalog.models import Category, ContactInfo, Product
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class ProductListView(ListView):
@@ -30,8 +30,8 @@ class ProductListView(ListView):
         return context
 
 
-class ProductDetailView(DetailView):
-    """Контроллер для отображения детальной информации о товаре"""
+class ProductDetailView(LoginRequiredMixin, DetailView):
+    """Контроллер для отображения детальной информации о товаре."""
 
     model = Product
     template_name = "catalog/product_detail.html"

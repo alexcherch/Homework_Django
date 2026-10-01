@@ -1,10 +1,10 @@
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from blog.models import BlogPost
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class BlogPostListView(ListView):
