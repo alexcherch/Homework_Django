@@ -31,8 +31,7 @@ class UserAdmin(BaseUserAdmin):
         """Миниатюра аватара прямо в списке."""
         if obj.avatar:
             return format_html(
-                '<img src="{}" style="width: 40px; height: 40px; '
-                'object-fit: cover; border-radius: 50%;" />',
+                '<img src="{}" style="width: 40px; height: 40px; ' 'object-fit: cover; border-radius: 50%;" />',
                 obj.avatar.url,
             )
         return format_html('<span style="color: #999; font-size: 11px;">{}</span>', "Нет фото")
