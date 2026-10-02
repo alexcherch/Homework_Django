@@ -3,7 +3,9 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center my-4">
     <h1 class="display-4 fw-bold text-dark mb-0">Блог проекта</h1>
-    <a href="{% url 'blog:create' %}" class="btn btn-success btn-lg fw-bold shadow-sm">+ Написать статью</a>
+    {% if perms.blog.add_blogpost %}
+        <a href="{% url 'blog:create' %}" class="btn btn-success btn-lg fw-bold shadow-sm">+ Написать статью</a>
+    {% endif %}
 </div>
 
 <p class="lead text-muted mb-5">Читайте свежие новости, обзоры и полезные статьи от нашей команды.</p>
@@ -31,8 +33,12 @@
                     <span class="text-muted small">👁 Просмотров: {{ blog.views_count }}</span>
                     <div class="btn-group">
                         <a href="{% url 'blog:detail' blog.pk %}" class="btn btn-sm btn-outline-primary px-3 fw-bold">Читать</a>
-                        <a href="{% url 'blog:update' blog.pk %}" class="btn btn-sm btn-outline-secondary px-3">Редактировать</a>
-                        <a href="{% url 'blog:delete' blog.pk %}" class="btn btn-sm btn-outline-danger px-3">Удалить</a>
+                        {% if perms.blog.change_blogpost %}
+                            <a href="{% url 'blog:update' blog.pk %}" class="btn btn-sm btn-outline-secondary px-3">Редактировать</a>
+                        {% endif %}
+                        {% if perms.blog.delete_blogpost %}
+                            <a href="{% url 'blog:delete' blog.pk %}" class="btn btn-sm btn-outline-danger px-3">Удалить</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

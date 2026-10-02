@@ -1,5 +1,7 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
 from catalog.forms import ProductForm
@@ -46,22 +48,67 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     template_name = "catalog/product_form.html"
     success_url = reverse_lazy("catalog:home")
 
+    def get_form_kwargs(self):
+        """Передаём текущего пользователя в форму (для проверки прав на is_published)"""
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
-    """Контроллер для редактирования товара"""
+    def form_valid(self, form):
+        """Автоматически привязываем товар к текущему пользователю"""
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
+
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """Контроллер для редактирования товара (только владелец или модератор)"""
 
     model = Product
     form_class = ProductForm
     template_name = "catalog/product_form.html"
     success_url = reverse_lazy("catalog:home")
 
+    def get_form_kwargs(self):
+        """Передаём текущего пользователя в форму (для проверки прав на is_published)"""
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
-    """Контроллер для удаления товара"""
+    def test_func(self):
+        """Проверка: только владелец или модератор может редактировать товар"""
+        product = self.get_object()
+        user = self.request.user
+        is_moderator = user.groups.filter(name="Модератор продуктов").exists()
+        return user == product.owner or is_moderator or user.is_superuser
+
+
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """Контроллер для удаления товара (владелец, модератор или суперюзер)"""
 
     model = Product
     template_name = "catalog/product_confirm_delete.html"
     success_url = reverse_lazy("catalog:home")
+
+    def test_func(self):
+        """Проверка: владелец, модератор или суперюзер может удалить товар"""
+        product = self.get_object()
+        user = self.request.user
+        is_moderator = user.groups.filter(name="Модератор продуктов").exists()
+        return user == product.owner or is_moderator or user.is_superuser
+
+
+class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    """Отмена публикации товара. Доступно только модераторам с правом can_unpublish_product."""
+
+    permission_required = "catalog.can_unpublish_product"
+    raise_exception = True
+
+    def post(self, request, *args, **kwargs):
+        """Отменяем публикацию и возвращаемся на страницу товара."""
+        product = get_object_or_404(Product, pk=kwargs["pk"])
+        product.is_published = False
+        product.save(update_fields=["is_published", "updated_at"])
+        return redirect("catalog:product_detail", pk=product.pk)
 
 
 class ContactsTemplateView(TemplateView):

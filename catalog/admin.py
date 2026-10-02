@@ -15,9 +15,10 @@ class CategoryAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     """Настройка отображения продуктов в админке"""
 
-    list_display = ("id", "image_preview", "name", "price", "category")
-    list_filter = ("category",)
-    search_fields = ("name", "description")
+    list_display = ("id", "image_preview", "name", "price", "category", "owner", "is_published")
+    list_filter = ("category", "is_published")
+    search_fields = ("name", "description", "owner__email")
+    list_editable = ("is_published",)
 
     def image_preview(self, obj):
         """Метод для генерации миниатюры картинки прямо в таблице админки"""
