@@ -58,6 +58,20 @@ class Product(models.Model):
         verbose_name="Цена за покупку",
         help_text="Укажите цену товара",
     )
+    is_published = models.BooleanField(
+        default=False,
+        verbose_name="Опубликован",
+        help_text="Отметьте, чтобы товар был виден покупателям",
+    )
+    owner = models.ForeignKey(
+        "users.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="products",
+        verbose_name="Владелец",
+        help_text="Пользователь, создавший товар",
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата последнего изменения")
 
@@ -65,6 +79,9 @@ class Product(models.Model):
         verbose_name = "товар"
         verbose_name_plural = "Товары"
         ordering = ["name"]
+        permissions = [
+            ("can_unpublish_product", "Может отменять публикацию продукта"),
+        ]
 
     def __str__(self):
         return self.name
