@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
@@ -29,15 +30,15 @@ class ProductListView(ListView):
         return context
 
 
-class ProductDetailView(DetailView):
-    """Контроллер для отображения детальной информации о товаре"""
+class ProductDetailView(LoginRequiredMixin, DetailView):
+    """Контроллер для отображения детальной информации о товаре."""
 
     model = Product
     template_name = "catalog/product_detail.html"
     context_object_name = "product"
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     """Контроллер для создания нового товара"""
 
     model = Product
@@ -46,7 +47,7 @@ class ProductCreateView(CreateView):
     success_url = reverse_lazy("catalog:home")
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     """Контроллер для редактирования товара"""
 
     model = Product
@@ -55,7 +56,7 @@ class ProductUpdateView(UpdateView):
     success_url = reverse_lazy("catalog:home")
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     """Контроллер для удаления товара"""
 
     model = Product

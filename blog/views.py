@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
@@ -47,7 +48,7 @@ class BlogPostDetailView(DetailView):
         return obj
 
 
-class BlogPostCreateView(CreateView):
+class BlogPostCreateView(LoginRequiredMixin, CreateView):
     """Контроллер создания статьи"""
 
     model = BlogPost
@@ -56,7 +57,7 @@ class BlogPostCreateView(CreateView):
     success_url = reverse_lazy("blog:list")
 
 
-class BlogPostUpdateView(UpdateView):
+class BlogPostUpdateView(LoginRequiredMixin, UpdateView):
     """Контроллер редактирования статьи"""
 
     model = BlogPost
@@ -68,7 +69,7 @@ class BlogPostUpdateView(UpdateView):
         return reverse("blog:detail", kwargs={"pk": self.object.pk})
 
 
-class BlogPostDeleteView(DeleteView):
+class BlogPostDeleteView(LoginRequiredMixin, DeleteView):
     """Контроллер удаления статьи"""
 
     model = BlogPost
