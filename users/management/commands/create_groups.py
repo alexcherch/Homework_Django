@@ -50,9 +50,7 @@ class Command(BaseCommand):
             ],
         )
         content_group.permissions.set(blog_perms)
-        self.stdout.write(
-            self.style.SUCCESS("      Права назначены: add/change/delete/view_blogpost")
-        )
+        self.stdout.write(self.style.SUCCESS("      Права назначены: add/change/delete/view_blogpost"))
 
         self.stdout.write("")
         self.stdout.write(self.style.SUCCESS("Готово!"))

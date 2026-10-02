@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.mail import send_mail
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
@@ -48,30 +48,33 @@ class BlogPostDetailView(DetailView):
         return obj
 
 
-class BlogPostCreateView(LoginRequiredMixin, CreateView):
-    """Контроллер создания статьи"""
+class BlogPostCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    """Контроллер создания статьи (только для контент-менеджеров)"""
 
     model = BlogPost
     fields = ["title", "content", "image", "is_published"]
     template_name = "blog/blog_form.html"
     success_url = reverse_lazy("blog:list")
+    permission_required = "blog.add_blogpost"
 
 
-class BlogPostUpdateView(LoginRequiredMixin, UpdateView):
-    """Контроллер редактирования статьи"""
+class BlogPostUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    """Контроллер редактирования статьи (только для контент-менеджеров)"""
 
     model = BlogPost
     fields = ["title", "content", "image", "is_published"]
     template_name = "blog/blog_form.html"
+    permission_required = "blog.change_blogpost"
 
     def get_success_url(self):
         """После успешного редактирования перенаправляем на страницу отредактированной статьи"""
         return reverse("blog:detail", kwargs={"pk": self.object.pk})
 
 
-class BlogPostDeleteView(LoginRequiredMixin, DeleteView):
-    """Контроллер удаления статьи"""
+class BlogPostDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    """Контроллер удаления статьи (только для контент-менеджеров)"""
 
     model = BlogPost
     template_name = "blog/blog_confirm_delete.html"
     success_url = reverse_lazy("blog:list")
+    permission_required = "blog.delete_blogpost"
