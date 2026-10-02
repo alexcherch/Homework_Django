@@ -21,16 +21,25 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ["name", "description", "image", "category", "price"]
+        fields = ["name", "description", "image", "category", "price", "is_published"]
 
-    def __init__(self, *args, **kwargs):
-        """Стилизация всех полей формы под Bootstrap"""
+    def __init__(self, *args, user=None, **kwargs):
+        """Стилизация полей + скрытие is_published для не-модераторов"""
         super().__init__(*args, **kwargs)
+        self.user = user
+
         for field_name, field in self.fields.items():
             if isinstance(field.widget, forms.CheckboxInput):
                 field.widget.attrs["class"] = "form-check-input"
             else:
                 field.widget.attrs["class"] = "form-control py-2"
+
+        if self.user and self.user.is_authenticated:
+            is_moderator = self.user.groups.filter(name="Модератор продуктов").exists() or self.user.is_superuser
+            if not is_moderator:
+                self.fields.pop("is_published", None)
+        else:
+            self.fields.pop("is_published", None)
 
     def clean_price(self):
         """Валидация цены: защита от отрицательных значений по ТЗ"""
