@@ -24,10 +24,16 @@
             {{ blog.content }}
         </div>
 
-        <div class="d-flex gap-2 mt-5 pt-4 border-top">
-            <a href="{% url 'blog:update' blog.pk %}" class="btn btn-primary px-4 fw-bold">Редактировать статью</a>
-            <a href="{% url 'blog:delete' blog.pk %}" class="btn btn-outline-danger px-4">Удалить</a>
-        </div>
+        {% if perms.blog.change_blogpost or perms.blog.delete_blogpost %}
+            <div class="d-flex gap-2 mt-5 pt-4 border-top">
+                {% if perms.blog.change_blogpost %}
+                    <a href="{% url 'blog:update' blog.pk %}" class="btn btn-primary px-4 fw-bold">Редактировать статью</a>
+                {% endif %}
+                {% if perms.blog.delete_blogpost %}
+                    <a href="{% url 'blog:delete' blog.pk %}" class="btn btn-outline-danger px-4">Удалить</a>
+                {% endif %}
+            </div>
+        {% endif %}
     </article>
 </div>
 {% endblock %}

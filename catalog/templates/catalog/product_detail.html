@@ -17,18 +17,53 @@
         <!-- БЛОК С ТЕКСТОВОЙ ИНФОРМАЦИЕЙ -->
         <div class="col-md-6 d-flex flex-column justify-content-between">
             <div>
-                <span class="badge bg-secondary mb-2">{{ product.category.name }}</span>
+                <div class="d-flex gap-2 mb-2">
+                    <span class="badge bg-secondary">{{ product.category.name }}</span>
+                    {% if product.is_published %}
+                        <span class="badge bg-success">✓ Опубликован</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">⏳ Не опубликован</span>
+                    {% endif %}
+                </div>
+
                 <h1 class="display-5 text-dark fw-bold mb-3">{{ product.name }}</h1>
                 <p class="h3 text-primary fw-bold mb-4">{{ product.price|floatformat:0 }} ₽</p>
-                
+
                 <h2 class="h5 text-muted fw-bold mb-2">Описание товара:</h2>
                 <p class="text-muted fs-5" style="text-align: justify;">
                     {{ product.description|default:"Описание для данного товара пока отсутствует." }}
                 </p>
+
+                {% if product.owner %}
+                    <p class="text-muted small mt-4">
+                        <strong>Владелец:</strong> {{ product.owner.email }}
+                    </p>
+                {% endif %}
             </div>
 
-            <!-- НАВИГАЦИОННАЯ КНОПКА НАЗАД -->
+            <!-- БЛОК ДЕЙСТВИЙ -->
             <div class="mt-5">
+                {% if user == product.owner or user.is_superuser or perms.catalog.can_unpublish_product %}
+                    <div class="d-flex gap-2 mb-3">
+                        <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-outline-secondary px-4">
+                            ✏️ Изменить
+                        </a>
+                        <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-outline-danger px-4">
+                            🗑 Удалить
+                        </a>
+                    </div>
+                {% endif %}
+
+                {% if product.is_published and perms.catalog.can_unpublish_product %}
+                    <form method="post" action="{% url 'catalog:product_unpublish' product.pk %}" class="mb-3">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-warning px-4 fw-bold"
+                                onclick="return confirm('Отменить публикацию товара «{{ product.name }}»?');">
+                            🚫 Отменить публикацию
+                        </button>
+                    </form>
+                {% endif %}
+
                 <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary btn-lg px-4">
                     ← Назад на главную
                 </a>

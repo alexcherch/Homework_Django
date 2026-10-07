@@ -67,14 +67,16 @@
                     <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-outline-primary w-100 py-2 fw-bold">
                         Посмотреть товар
                     </a>
-                    <div class="d-flex gap-2">
-                        <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-sm btn-outline-secondary w-50 py-2">
-                            ✏️ Изменить
-                        </a>
-                        <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-sm btn-outline-danger w-50 py-2">
-                            🗑 Удалить
-                        </a>
-                    </div>
+                    {% if user == product.owner or user.is_superuser or perms.catalog.can_unpublish_product %}
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-sm btn-outline-secondary w-50 py-2">
+                                ✏️ Изменить
+                            </a>
+                            <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-sm btn-outline-danger w-50 py-2">
+                                🗑 Удалить
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
