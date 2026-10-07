@@ -1,10 +1,11 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
 
 from catalog.forms import ProductForm
+from catalog.mixins import ProductOwnerOrModeratorMixin
 from catalog.models import Category, ContactInfo, Product
 
 
@@ -60,7 +61,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, ProductOwnerOrModeratorMixin, UpdateView):
     """Контроллер для редактирования товара (только владелец или модератор)"""
 
     model = Product
@@ -74,27 +75,13 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         kwargs["user"] = self.request.user
         return kwargs
 
-    def test_func(self):
-        """Проверка: только владелец или модератор может редактировать товар"""
-        product = self.get_object()
-        user = self.request.user
-        is_moderator = user.groups.filter(name="Модератор продуктов").exists()
-        return user == product.owner or is_moderator or user.is_superuser
 
-
-class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, ProductOwnerOrModeratorMixin, DeleteView):
     """Контроллер для удаления товара (владелец, модератор или суперюзер)"""
 
     model = Product
     template_name = "catalog/product_confirm_delete.html"
     success_url = reverse_lazy("catalog:home")
-
-    def test_func(self):
-        """Проверка: владелец, модератор или суперюзер может удалить товар"""
-        product = self.get_object()
-        user = self.request.user
-        is_moderator = user.groups.filter(name="Модератор продуктов").exists()
-        return user == product.owner or is_moderator or user.is_superuser
 
 
 class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
