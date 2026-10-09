@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.cache import cache
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -34,11 +35,26 @@ class ProductListView(ListView):
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
-    """Контроллер для отображения детальной информации о товаре."""
+    """Контроллер для отображения детальной информации о товаре (с кешированием объекта)."""
 
     model = Product
     template_name = "catalog/product_detail.html"
     context_object_name = "product"
+
+    CACHE_KEY_PREFIX = "product_"
+    CACHE_TTL = 600  # 10 минут
+
+    def get_object(self, queryset=None):
+        """Возвращаем товар из кеша, либо из БД с последующим сохранением в кеш."""
+        pk = self.kwargs.get("pk")
+        cache_key = f"{self.CACHE_KEY_PREFIX}{pk}"
+
+        product = cache.get(cache_key)
+        if product is None:
+            product = get_object_or_404(Product, pk=pk)
+            cache.set(cache_key, product, timeout=self.CACHE_TTL)
+
+        return product
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -75,6 +91,12 @@ class ProductUpdateView(LoginRequiredMixin, ProductOwnerOrModeratorMixin, Update
         kwargs["user"] = self.request.user
         return kwargs
 
+    def form_valid(self, form):
+        """После сохранения сбрасываем кеш товара."""
+        response = super().form_valid(form)
+        cache.delete(f"product_{self.object.pk}")
+        return response
+
 
 class ProductDeleteView(LoginRequiredMixin, ProductOwnerOrModeratorMixin, DeleteView):
     """Контроллер для удаления товара (владелец, модератор или суперюзер)"""
@@ -82,6 +104,11 @@ class ProductDeleteView(LoginRequiredMixin, ProductOwnerOrModeratorMixin, Delete
     model = Product
     template_name = "catalog/product_confirm_delete.html"
     success_url = reverse_lazy("catalog:home")
+
+    def form_valid(self, form):
+        """Перед удалением сбрасываем кеш товара."""
+        cache.delete(f"product_{self.object.pk}")
+        return super().form_valid(form)
 
 
 class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
@@ -95,6 +122,9 @@ class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
         product = get_object_or_404(Product, pk=kwargs["pk"])
         product.is_published = False
         product.save(update_fields=["is_published", "updated_at"])
+
+        cache.delete(f"product_{product.pk}")
+
         return redirect("catalog:product_detail", pk=product.pk)
 
 
