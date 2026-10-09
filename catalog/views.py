@@ -8,6 +8,7 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView, T
 from catalog.forms import ProductForm
 from catalog.mixins import ProductOwnerOrModeratorMixin
 from catalog.models import Category, ContactInfo, Product
+from catalog.services import get_products_by_category
 
 
 class ProductListView(ListView):
@@ -126,6 +127,25 @@ class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
         cache.delete(f"product_{product.pk}")
 
         return redirect("catalog:product_detail", pk=product.pk)
+
+
+class CategoryProductsView(ListView):
+    """Список товаров указанной категории (данные берём из сервиса с кешированием)."""
+
+    template_name = "catalog/category_products.html"
+    context_object_name = "products"
+
+    def get_queryset(self):
+        """Получаем товары через сервисную функцию."""
+        category_id = self.kwargs.get("pk")
+        return get_products_by_category(category_id)
+
+    def get_context_data(self, **kwargs):
+        """Добавляем категорию в контекст для шаблона."""
+        context = super().get_context_data(**kwargs)
+        category_id = self.kwargs.get("pk")
+        context["category"] = Category.objects.filter(pk=category_id).first()
+        return context
 
 
 class ContactsTemplateView(TemplateView):
