@@ -8,23 +8,38 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView, T
 from catalog.forms import ProductForm
 from catalog.mixins import ProductOwnerOrModeratorMixin
 from catalog.models import Category, ContactInfo, Product
-from catalog.services import get_products_by_category
+from catalog.services import get_products_by_category, invalidate_products_list_cache
 
 
 class ProductListView(ListView):
-    """Контроллер для отображения главной страницы (список товаров)"""
+    """Контроллер для отображения главной страницы (список товаров) с кешированием."""
 
     model = Product
     template_name = "catalog/home.html"
     context_object_name = "products"
     paginate_by = 3
 
+    CACHE_KEY_PREFIX = "products_list_"
+    CACHE_TTL = 600  # 10 минут
+
     def get_queryset(self):
-        queryset = super().get_queryset().order_by("id")
+        """Возвращаем список товаров: сначала проверяем кеш, потом БД."""
         category_id = self.request.GET.get("category")
+        page = self.request.GET.get("page", 1)
+        category_part = category_id if category_id else "all"
+        cache_key = f"{self.CACHE_KEY_PREFIX}{category_part}_page_{page}"
+
+        cached = cache.get(cache_key)
+        if cached is not None:
+            return cached
+
+        queryset = super().get_queryset().order_by("id")
         if category_id:
             queryset = queryset.filter(category_id=category_id)
-        return queryset
+
+        products = list(queryset)
+        cache.set(cache_key, products, timeout=self.CACHE_TTL)
+        return products
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -73,9 +88,11 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         return kwargs
 
     def form_valid(self, form):
-        """Автоматически привязываем товар к текущему пользователю"""
+        """Автоматически привязываем товар к текущему пользователю + сбрасываем кеш."""
         form.instance.owner = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        invalidate_products_list_cache()
+        return response
 
 
 class ProductUpdateView(LoginRequiredMixin, ProductOwnerOrModeratorMixin, UpdateView):
@@ -93,9 +110,10 @@ class ProductUpdateView(LoginRequiredMixin, ProductOwnerOrModeratorMixin, Update
         return kwargs
 
     def form_valid(self, form):
-        """После сохранения сбрасываем кеш товара."""
+        """После сохранения сбрасываем кеш товара и список товаров."""
         response = super().form_valid(form)
         cache.delete(f"product_{self.object.pk}")
+        invalidate_products_list_cache()
         return response
 
 
@@ -107,8 +125,9 @@ class ProductDeleteView(LoginRequiredMixin, ProductOwnerOrModeratorMixin, Delete
     success_url = reverse_lazy("catalog:home")
 
     def form_valid(self, form):
-        """Перед удалением сбрасываем кеш товара."""
+        """Перед удалением сбрасываем кеш товара и список товаров."""
         cache.delete(f"product_{self.object.pk}")
+        invalidate_products_list_cache()
         return super().form_valid(form)
 
 
@@ -125,6 +144,7 @@ class ProductUnpublishView(LoginRequiredMixin, PermissionRequiredMixin, View):
         product.save(update_fields=["is_published", "updated_at"])
 
         cache.delete(f"product_{product.pk}")
+        invalidate_products_list_cache()
 
         return redirect("catalog:product_detail", pk=product.pk)
 

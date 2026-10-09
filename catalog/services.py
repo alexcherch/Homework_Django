@@ -2,7 +2,6 @@ from django.core.cache import cache
 
 from catalog.models import Category, Product
 
-
 CATEGORY_PRODUCTS_CACHE_KEY = "category_{category_id}"
 CATEGORY_PRODUCTS_CACHE_TTL = 600  # 10 минут
 
@@ -47,3 +46,20 @@ def invalidate_category_cache(category_id: int):
     чтобы кеш не отдавал устаревшие данные.
     """
     cache.delete(CATEGORY_PRODUCTS_CACHE_KEY.format(category_id=category_id))
+
+
+def invalidate_products_list_cache():
+    """Сбрасывает все ключи кеша списка товаров (главной страницы).
+
+    Сбрасываем все возможные варианты:
+        - products_list_all_page_1, products_list_all_page_2, ...
+        - products_list_{category_id}_page_1, products_list_{category_id}_page_2, ...
+    """
+    from catalog.models import Category
+
+    for page in range(1, 21):
+        cache.delete(f"products_list_all_page_{page}")
+
+    for category in Category.objects.all():
+        for page in range(1, 21):
+            cache.delete(f"products_list_{category.pk}_page_{page}")
