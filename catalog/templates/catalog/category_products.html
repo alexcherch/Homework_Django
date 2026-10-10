@@ -1,0 +1,68 @@
+{% extends 'catalog/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="text-center my-4">
+    {% if category %}
+        <h1 class="display-4 fw-bold text-dark mb-3">Категория: {{ category.name }}</h1>
+        {% if category.description %}
+            <p class="lead text-muted">{{ category.description }}</p>
+        {% else %}
+            <p class="lead text-muted">Товары в категории «{{ category.name }}»</p>
+        {% endif %}
+    {% else %}
+        <h1 class="display-4 fw-bold text-dark mb-3">Категория не найдена</h1>
+        <p class="lead text-muted">Возможно, она была удалена или вы перешли по неверной ссылке.</p>
+    {% endif %}
+</div>
+
+<!-- КНОПКА НАЗАД -->
+<div class="mb-4">
+    <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary">
+        ← Ко всем товарам
+    </a>
+</div>
+
+<!-- СЕТКА ТОВАРОВ -->
+<div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+    {% for product in products %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0 bg-white">
+                {% if product.image %}
+                    <div class="bg-light d-flex align-items-center justify-content-center rounded-top" style="height: 200px; overflow: hidden;">
+                        <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                    </div>
+                {% else %}
+                    <div class="bg-light text-muted d-flex align-items-center justify-content-center rounded-top" style="height: 200px;">
+                        <span class="small">Изображение отсутствует</span>
+                    </div>
+                {% endif %}
+
+                <div class="card-body d-flex flex-column justify-content-between" style="min-height: 210px;">
+                    <div>
+                        <h5 class="card-title fw-bold text-dark mb-2" style="min-height: 48px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            {{ product.name }}
+                        </h5>
+                        <p class="card-text text-muted small mb-0" style="text-align: justify; min-height: 40px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            {{ product.description|truncatechars:100 }}
+                        </p>
+                    </div>
+
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="h5 text-primary fw-bold mb-0">{{ product.price|floatformat:0 }} ₽</span>
+                        </div>
+                        <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-outline-primary w-100 py-2 fw-bold">
+                            Посмотреть товар
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12 text-center my-5">
+            <p class="text-muted fs-5">В этой категории пока нет опубликованных товаров.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
